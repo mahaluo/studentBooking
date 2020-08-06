@@ -36,7 +36,6 @@ export class StudentCalendar extends Component {
                     endTime: doc.data().endTime,
                     startRecur: doc.data().startRecur,
                     endRecur: doc.data().endRecur,
-                    color: 'red'
                 };
                 events.push(subject);
                 console.log('found subject: ' + subject.title);
