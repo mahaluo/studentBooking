@@ -4,33 +4,52 @@ import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from '@fullcalendar/timegrid'
 import interactionPlugin from '@fullcalendar/interaction'
 import { INITIAL_EVENTS, createEventId } from './studentEvents'
-import { handleDateSelect, handleEventClick, handleEvents } from './studentActions';
+import { handleDateSelect, handleEvents } from './studentActions';
 import { getSubjects } from '../../firebase/getSubjects';
 import '../../../sass/components/index.scss';
+
+import firebase from '../../firebase/fbConfig';
+
+const db = firebase.firestore();
+
 
 export class StudentCalendar extends Component {
 
     state = {
         currentEvents: [],
-        events: [],
+        events: getSubjects(),
     }
 
     componentDidMount() {
 
-        async function fetchSubjects() {
-            const subjects = getSubjects();
+        let events = [];
 
-            await subjects
-            .then(res => {
-                this.setState({events: res});
-            })
-            .finally(() => console.log('events in state: ' + this.state.events))
-            return subjects;
-        }
+        db.collection("subjects")
+        .get()
+        .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+                let subject = {
+                    id: doc.data().subjectCode,
+                    title: doc.data().title,
+                    daysOfWeek: [ doc.data().daysOfWeek ], // these recurrent events move separately
+                    startTime: doc.data().startTime,
+                    endTime: doc.data().endTime,
+                    startRecur: doc.data().startRecur,
+                    endRecur: doc.data().endRecur,
+                    color: 'red'
+                };
+                events.push(subject);
+                console.log('found subject: ' + subject.title);
+            });
+        })
+        .then(() => console.log('returning number of events: ' + events.length))
+        .finally(() => {
+            this.setState({events: events})
+        });
 
-        this.setState({events: fetchSubjects()});
+
+        console.log('events in calendar: ' + this.state.events);
     }
-   
 
     render() {
 
@@ -65,86 +84,20 @@ export class StudentCalendar extends Component {
             </div>
         )
     }
+}
 
-    renderSidebar() {
-        return (
-            <div className='demo-app-sidebar'>
-                <div className='demo-app-sidebar-section'>
-                    <h2>Instructions</h2>
-                    <ul>
-                        <li>Select dates and you will be prompted to create a new event</li>
-                        <li>Drag, drop, and resize events</li>
-                        <li>Click an event to delete it</li>
-                    </ul>
-                </div>
-                <div className='demo-app-sidebar-section'>
-                    <label>
-                        <input
-                            type='checkbox'
-                            checked={this.state.weekendsVisible}
-                            onChange={this.handleWeekendsToggle}
-                        ></input>
-            toggle weekends
-          </label>
-                </div>
-                <div className='demo-app-sidebar-section'>
-                    <h2>All Events ({this.state.currentEvents.length})</h2>
-                    <ul>
-                        {this.state.currentEvents.map(renderSidebarEvent)}
-                    </ul>
-                </div>
-            </div>
-        )
-    }
 
-    handleWeekendsToggle = () => {
-        this.setState({
-            weekendsVisible: !this.state.weekendsVisible
-        })
-    }
-
-    handleDateSelect = (selectInfo) => {
-        let title = prompt('Please enter a new title for your event')
-        let calendarApi = selectInfo.view.calendar
-
-        calendarApi.unselect() // clear date selection
-
-        if (title) {
-            calendarApi.addEvent({
-                id: createEventId(),
-                title,
-                start: selectInfo.startStr,
-                end: selectInfo.endStr,
-                allDay: selectInfo.allDay
-            })
-        }
-    }
-
-    handleEventClick = (clickInfo) => {
-        clickInfo.event.remove()
-    }
-
-    handleEvents = (events) => {
-        this.setState({
-            currentEvents: events
-        })
-    }
-
+const handleEventClick = (clickInfo) => {
+    // if (confirm(`Are you sure you want to delete the event '${clickInfo.event.title}'`)) {
+    //     clickInfo.event.remove()
+    // }
+    console.log('clicked event');
 }
 
 function renderEventContent(eventInfo) {
     return (
         <>
-            <b>{eventInfo.timeText}</b>
-            <i>{eventInfo.event.title}</i>
+            <p>{eventInfo.event.title}</p>
         </>
-    )
-}
-function renderSidebarEvent(event) {
-    return (
-        <li key={event.id}>
-            <b>{formatDate(event.start, { year: 'numeric', month: 'short', day: 'numeric' })}</b>
-            <i>{event.title}</i>
-        </li>
     )
 }

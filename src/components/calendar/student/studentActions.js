@@ -24,12 +24,6 @@ export const handleDateSelect = (selectInfo) => {
     // }
 }
 
-export const handleEventClick = (clickInfo) => {
-    // if (confirm(`Are you sure you want to delete the event '${clickInfo.event.title}'`)) {
-    //     clickInfo.event.remove()
-    // }
-    console.log('clicked event');
-}
 
 export const handleEvents = (events) => {
     // this.setState({
