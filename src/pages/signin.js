@@ -1,15 +1,15 @@
 import React, { useContext } from 'react';
 import { withRouter, Redirect } from 'react-router';
+import { SigninHeader } from '../components';
 import firebase from '../components/firebase/fbConfig';
 import { AuthContext } from '../components/auth/auth';
-import { Button } from '@material-ui/core';
 import '../sass/pages/index.scss';
 
 const provider = new firebase.auth.GoogleAuthProvider();
 
 const SignIn = () => {
 
-    const handleLogin = () => {
+    const handleSignin = () => {
         firebase.auth().signInWithRedirect(provider);
     }
 
@@ -20,9 +20,13 @@ const SignIn = () => {
     }
 
     return (
-        <div className="signinContainer">
-        <p>hej</p>
-            <Button onClick={() => handleLogin()} variant="outlined">Sign In</Button>
+        <div className="signin_container">
+            <div className="header"><SigninHeader handleSignin={() => handleSignin()} /></div>
+
+            <div className="signin_container__signin">
+            <p>hej</p>
+            </div>
+        
         </div>
     )
 }

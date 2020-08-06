@@ -1,4 +1,4 @@
 export {default as Home} from './home'
 export {default as SignIn} from './signin'
-export {default as StudentProfile} from './studentProfile'
-export {default as TeacherProfile} from './teacherProfile'
+export { Student } from '../components/profile/student'
+export {default as Teacher} from '../components/profile/teacher'

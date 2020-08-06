@@ -2,7 +2,6 @@ import firebase from 'firebase/app'
 import 'firebase/firestore'
 import 'firebase/auth'
 
-
 var firebaseConfig = {
   apiKey: "AIzaSyC7m-JeQ0bH8AIw1jOLvf_SasdPkuGYWds",
   authDomain: "student-booking-9e3e8.firebaseapp.com",

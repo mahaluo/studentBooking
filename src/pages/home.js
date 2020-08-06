@@ -1,36 +1,23 @@
-import React, { useContext, useState, useEffect } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { withRouter } from 'react-router';
-import { Header } from '../components';
-import { Link } from 'react-router-dom';
+import { SignoutHeader, StudentCalendar } from '../components';
 import firebase from '../components/firebase/fbConfig';
 import { AuthContext } from '../components/auth/auth';
 import '../sass/pages/index.scss';
 
 
 const Home = React.memo(function Home() {
-    //level 0 - student
-    //level 1 - teacher
-    //level 2 - admin?
 
-    const [level, setLevel] = useState(0);
-    var { currentUser } = useContext(AuthContext);
-   
+    var { currentUser, level } = useContext(AuthContext);
+    const [page, setPage] = useState('home')
 
-    useEffect(() => {   
+    useEffect(() => {
+        console.log('user level is: ' + level);
         if (currentUser != null) {
             console.log('home page current user ' + currentUser);
-            var num = parseInt(currentUser.substr(0, 4));
-            if (num) {
-                setLevel(0);
-                console.log('student logged in');
-            }
-            else {
-                setLevel(1);
-                console.log('teacher logged in');
-            }
         }
-      
-    }, [currentUser])
+
+    }, [currentUser, level, page])
 
     const handleSignout = () => {
         firebase.auth().signOut().then(function () {
@@ -42,15 +29,80 @@ const Home = React.memo(function Home() {
         });
     }
 
+    const handlePage = () => {
+        if (page === 'home') {
+            setPage('profile');
+        }
+        else {
+            setPage('home');
+        }
+    }
+
     return (
-        <div className="homeContainer">
-            {/* <div><Header /></div> */}
+        <div className="home_container">
+            <div className="header"><SignoutHeader handleSignout={() => handleSignout()} handlePage={handlePage} page={page} /></div>
 
-            <div>
-                <p>Hej</p>
-                <div><Link to='/' onClick={() => handleSignout()}>signout</Link></div>
+            <div className="home_container__calendar_container">
+                {page === 'home' ?
+                    <div>
+                        {level === 0 ?
+                            <div>
+                                <StudentCalendar />
+                            </div>
+                            :
+                            null
+                        }
 
-                {level === 0 ? <div><p>student</p></div> : <div><p>teacher</p></div>}
+                        {level === 1 ?
+                            <div>
+                                <p>teacher home page</p>
+                            </div>
+                            :
+                            null
+                        }
+
+                        {level === 2 ?
+                            <div>
+                                <p>admin home page</p>
+                            </div>
+                            :
+                            null
+                        }
+
+
+
+                    </div>
+                    :
+                    <div>
+
+                        {level === 0 ?
+                            <div>
+                                <p>student profile page</p>
+                            </div>
+                            :
+                            null
+                        }
+
+                        {level === 1 ?
+                            <div>
+                                <p>teacher profile page</p>
+                            </div>
+                            :
+                            null
+                        }
+
+                        {level === 2 ?
+                            <div>
+                                <p>admin profile page</p>
+                            </div>
+                            :
+                            null
+                        }
+                    </div>
+                }
+
+
+
 
             </div>
 
