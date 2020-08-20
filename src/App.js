@@ -1,19 +1,30 @@
 import React from 'react';
-import { BrowserRouter, Route } from 'react-router-dom';
-import { Home, SignIn } from './pages';
-import PrivateRoute from './components/auth/privateRoute';
-import { AuthProvider } from './components/auth/auth';
+import { BrowserRouter, Route, Redirect } from 'react-router-dom';
+import { HomeWithRouter, Profile } from './js/pages';
+import { PrivateRoute, hamburgerConstants } from './js/utils';
+import { Grid } from '@material-ui/core';
 
 function App() {
   return (
-    <div className="App">
-      <AuthProvider>
-        <BrowserRouter>
-          <Route exact path='/' component={SignIn} />
-          <PrivateRoute path='/home' component={Home} />
-        </BrowserRouter>
-      </AuthProvider>
-    </div>
+    <Grid>
+
+      <BrowserRouter>
+        <Route
+          exact
+          path="/"
+          render={() => {
+            return (
+              <Redirect to={hamburgerConstants.HOME} /> 
+            )
+          }}
+        />
+
+        <Route exact path={hamburgerConstants.HOME} component={HomeWithRouter} />
+        <PrivateRoute path={hamburgerConstants.PROFILE} component={Profile} />
+
+      </BrowserRouter>
+
+    </Grid>
   );
 }
 

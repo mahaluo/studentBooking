@@ -2,7 +2,7 @@ import firebase from 'firebase/app'
 import 'firebase/firestore'
 import 'firebase/auth'
 
-var firebaseConfig = {
+const firebaseConfig = {
   apiKey: "AIzaSyC7m-JeQ0bH8AIw1jOLvf_SasdPkuGYWds",
   authDomain: "student-booking-9e3e8.firebaseapp.com",
   databaseURL: "https://student-booking-9e3e8.firebaseio.com",
@@ -16,7 +16,7 @@ var firebaseConfig = {
 
 firebase.initializeApp(firebaseConfig);
 
-export default firebase;
+export { firebase };
 
 
 

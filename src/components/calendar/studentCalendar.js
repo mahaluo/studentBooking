@@ -5,7 +5,7 @@ import timeGridPlugin from '@fullcalendar/timegrid'
 import interactionPlugin from '@fullcalendar/interaction'
 import { INITIAL_EVENTS, createEventId } from './studentEvents'
 import { handleDateSelect, handleEvents } from './studentActions';
-import { getSubjects } from '../../firebase/getSubjects';
+import { getSubjects } from './getSubjects';
 import '../../../sass/components/index.scss';
 
 import firebase from '../../firebase/fbConfig';
